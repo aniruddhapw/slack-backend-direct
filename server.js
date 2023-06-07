@@ -68,6 +68,7 @@ mongoose.connection.once("open", () => {
 
 //api routes
 app.get("/", (req, res) => res.status(200).send("hello guyssss"));
+
 app.post("/new/user", async (req, res) => {
   const dbData = req.body;
 
@@ -86,7 +87,7 @@ app.post("/new/user", async (req, res) => {
       res.status(500).send(err);
     });
 });
-
+//creates new channel
 app.post("/new/channel", (req, res) => {
   const channelData = req.body;
   const newChannel = new Conversation({
@@ -104,7 +105,7 @@ app.post("/new/channel", (req, res) => {
       res.status(500).send(err);
     });
 });
-
+//creates new message
 app.post("/new/message", async (req, res) => {
   try {
     const conversationId = req.query.id;
@@ -144,7 +145,7 @@ app.post("/channels/new", (req, res) => {
       res.status(500).send(err);
     });
 });
-
+//returns the channel list
 app.get("/get/channelList", (req, res) => {
   Conversation.find({ conversationType: "group" }, "_id name")
     .then((data) => {
@@ -158,7 +159,7 @@ app.get("/get/channelList", (req, res) => {
       res.status(500).send(err);
     });
 });
-
+//returns the whole conversation by id if userId is in the list of members of the conversation
 app.get("/get/conversation", (req, res) => {
   const conversationId = req.query.id;
   const userId = req.query.userId;
@@ -191,10 +192,11 @@ app.get("/get/conversation", (req, res) => {
       }
     })
     .catch((err) => {
+      console.log(err);
       res.status(500).send(err);
     });
 });
-//user list
+// returns user list
 app.get("/get/userList", (req, res) => {
   User.find({})
     .then((users) => {
@@ -205,7 +207,7 @@ app.get("/get/userList", (req, res) => {
       res.status(500).json({ error: "Internal server error" });
     });
 });
-
+//creates new direct conversation with members as sender and reciver
 app.post("/direct/new", async (req, res) => {
   try {
     const { sender, receiver } = req.body;
@@ -217,19 +219,17 @@ app.post("/direct/new", async (req, res) => {
     });
 
     if (existingConversation) {
-      return res.status(200).send(existingConversation); // Conversation already exists, send existing conversation
+      return res.status(200).send(existingConversation);
     }
 
-    // Create new conversation with conversationType: "direct" and members: [sender, receiver]
     const newConversation = new Conversation({
       conversationType: "direct",
       members: [sender, receiver],
     });
 
-    // Save new conversation to database
     const conversation = await newConversation.save();
 
-    res.status(201).send(conversation); // New conversation created, send new conversation
+    res.status(201).send(conversation);
   } catch (err) {
     console.log(err);
     res.status(500).send(err);

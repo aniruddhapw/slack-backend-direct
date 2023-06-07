@@ -1,25 +1,26 @@
-// import mongoose from "mongoose";
-// const slackSchema = mongoose.Schema({
-//   userName: String,
-//   channelName: String,
-//   conversation: [
-//     {
-//       message: String,
-//       timestamp: String,
-//       user: String,
-//       userImage: String,
-//     },
-//   ],
-// });
-
-// export default mongoose.model("conversations", slackSchema);
-
 import mongoose from "mongoose";
 
+// const userSchema = mongoose.Schema({
+//   username: String,
+//   email: String,
+//   id: String,
+//   userImage: String,
+// });
 const userSchema = mongoose.Schema({
-  username: String,
-  email: String,
-  id: String,
+  username: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  id: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   userImage: String,
 });
 
@@ -56,8 +57,20 @@ const directMessageSchema = mongoose.Schema({
   },
   conversationId: String,
   username: String,
-  message: String,
-  timestamp: String,
+  message: {
+    type: String,
+    required: true,
+    trim: true,
+    set: function (value) {
+      // Remove internal extra spaces
+      return value.replace(/\s+/g, " ");
+    },
+  },
+  timestamp: {
+    type: String,
+    required: true,
+  },
+
   userImage: String,
 });
 
