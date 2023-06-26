@@ -296,3 +296,4 @@ app.delete("/conversations/:id", async (req, res) => {
 
 //listen
 app.listen(port, () => console.log(`listening on localhost :${port}`));
+export default app;
