@@ -16,6 +16,8 @@ const userSchema = mongoose.Schema({
     unique: true,
   },
   userImage: String,
+  isOnline: Boolean,
+  lastSeen: Date,
 });
 
 // const User = mongoose.model("User", userSchema);

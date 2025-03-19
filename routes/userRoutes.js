@@ -9,4 +9,6 @@ userRouter.post("/user", UserController.createUser);
 // Get the list of users
 userRouter.get("/userList", UserController.getUserList);
 
+userRouter.post("/updateStatus", UserController.updateUserStatus);
+
 export default userRouter;

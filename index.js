@@ -46,11 +46,24 @@ mongoose.connection.once("open", () => {
 
   User.watch().on("change", (change) => {
     if (change.operationType === "insert") {
-      console.log("user invoke");
-      const user = change.fullDocument;
+      console.log("New user added:", change.fullDocument);
       pusher.trigger("users", "newUser", {
-        user: user,
+        user: change.fullDocument,
       });
+    }
+    
+    if (change.operationType === "update") {
+      const updatedFields = change.updateDescription.updatedFields;
+      
+      if (updatedFields.hasOwnProperty("isOnline")) {
+        console.log(`User ${change.documentKey._id} is now ${updatedFields.isOnline ? "Online" : "Offline"}`);
+        
+        pusher.trigger("user-status", "status-update", {
+          userId: change.documentKey._id,
+          isOnline: updatedFields.isOnline,
+          lastSeen: updatedFields.lastSeen
+        });
+      }
     }
   });
 

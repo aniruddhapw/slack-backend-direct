@@ -29,6 +29,21 @@ const UserController = {
       res.status(500).json({ error: "Internal server error" });
     }
   },
+
+  updateUserStatus: async (req, res) => {
+    try {
+      const { userId, isOnline, lastSeen } = req.body;
+      const updatedUser = await User.findByIdAndUpdate(userId, {
+        isOnline,
+        lastSeen,
+      });
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+
 };
 
 export default UserController;
